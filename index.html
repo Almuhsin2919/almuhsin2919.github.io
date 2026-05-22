@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presensi Al Muhsin</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind Custom Configuration for dark mode & colors
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Custom Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.4);
+        }
+
+        /* Glassmorphism subtle pattern */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Subtle glowing background elements */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.35;
+        }
+        .dark .glow-orb {
+            opacity: 0.12;
+        }
+
+        /* Style override for default select arrows */
+        select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25rem;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .dark select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden antialiased">
+
+    <!-- Glowing Background Decorative Orbs -->
+    <div class="glow-orb w-96 h-96 bg-emerald-400 -top-20 -left-20 animate-pulse" style="animation-duration: 8s;"></div>
+    <div class="glow-orb w-96 h-96 bg-teal-400 bottom-10 -right-20 animate-pulse" style="animation-duration: 12s;"></div>
+
+    <!-- Top Action Bar (Theme Toggle) -->
+    <header class="w-full max-w-4xl mx-auto px-4 pt-6 flex justify-between items-center z-10">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-500 text-white p-2.5 rounded-2xl shadow-md shadow-emerald-500/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <span class="text-[10px] uppercase tracking-widest font-extrabold text-emerald-500 dark:text-emerald-400">Portal Resmi</span>
+                <h1 class="text-sm font-bold text-slate-800 dark:text-white -mt-1">Presensi Al Muhsin</h1>
+            </div>
+        </div>
+
+        <!-- Smooth Theme Toggle Button -->
+        <button id="themeToggle" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-400 p-2.5 rounded-xl transition-all duration-300 shadow-sm text-slate-600 dark:text-slate-300 focus:outline-none" aria-label="Toggle Theme">
+            <!-- Sun Icon (Dark Mode active) -->
+            <svg id="sunIcon" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.122-14.242l-.707-.707m12.728 12.728l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+            <!-- Moon Icon (Light Mode active) -->
+            <svg id="moonIcon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- Main Content Grid (Centered Beautiful Card) -->
+    <main class="w-full max-w-lg mx-auto px-4 py-8 flex-1 flex flex-col justify-center z-10">
+        
+        <!-- Main Form Card -->
+        <div class="glass-card rounded-3xl shadow-2xl border border-white/50 dark:border-slate-900/50 p-6 md:p-8 transition-all duration-300">
+            <div class="mb-6 text-center">
+                <span class="inline-block bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-3.5 py-1 rounded-full mb-3">
+                    Formulir Digital v3.0
+                </span>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Kirim Kehadiran</h2>
+                <p class="text-slate-400 dark:text-slate-500 text-xs mt-1.5">Isi kehadiran Anda dengan mudah menggunakan pilihan dropdown di bawah.</p>
+            </div>
+            
+            <form id="presensiForm" class="space-y-5">
+                
+                <!-- Dropdown Nama -->
+                <div>
+                    <label for="nama" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                    <div class="relative">
+                        <select id="nama" name="nama" required 
+                            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 py-3.5 px-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-250 shadow-sm text-sm cursor-pointer outline-none">
+                            <option value="" disabled selected hidden>Pilih Nama Anda...</option>
+                            <option value="01. MARYANTO">01. MARYANTO</option>
+<option value="02. ARI GUNAWAN">02. ARI GUNAWAN</option>
+<option value="03. AMMI MUNAWAROH">03. AMMI MUNAWAROH</option>
+<option value="04. MUTIA SALASATUN">04. MUTIA SALASATUN</option>
+<option value="05. SUMIARSIH">05. SUMIARSIH</option>
+<option value="06. IPUNG MUNIROH">06. IPUNG MUNIROH</option>
+<option value="07. FIRMAN ASHOFA">07. FIRMAN ASHOFA</option>
+<option value="08. IKA NAWANG SARI">08. IKA NAWANG SARI</option>
+<option value="09. AMINATUN">09. AMINATUN</option>
+<option value="10. ELVIA VALENTINA">10. ELVIA VALENTINA</option>
+<option value="11. ERLINA PUTRI F">11. ERLINA PUTRI F</option>
+<option value="12. HABIBATUL MUAZIZAH">12. HABIBATUL MUAZIZAH</option>
+<option value="13. TITES BANAT SARI">13. TITES BANAT SARI</option>
+<option value="14. LUTHFITA HAFIZHAH">14. LUTHFITA HAFIZHAH</option>
+<option value="15. MITA DWI LESTARI">15. MITA DWI LESTARI</option>
+<option value="16. NADIA VICA YUDITA">16. NADIA VICA YUDITA</option>
+<option value="17. VERNANDA PINGKA YUDITA">17. VERNANDA PINGKA YUDITA</option>
+<option value="18. SUMIARSIH 2">18. SUMIARSIH 2</option>
+<option value="19. TRI NUR SETIAWAN">19. TRI NUR SETIAWAN</option>
+<option value="20. ASIH WIDIYASTUTI">20. ASIH WIDIYASTUTI</option>
+<option value="21. YULIANTO">21. YULIANTO</option>
+<option value="22. MUSLIKHATUN">22. MUSLIKHATUN</option>
+<option value="23. ADWA GHAISANI ISNAWANG">23. ADWA GHAISANI ISNAWANG</option>
+<option value="24. BAHTIAR ADIKA PUTRA">24. BAHTIAR ADIKA PUTRA</option>
+<option value="25. DIMAS PRIHASMARA">25. DIMAS PRIHASMARA</option>
+<option value="26. FAIZATU ZAKHRA">26. FAIZATU ZAKHRA</option>
+<option value="27. MARSWANDA R">27. MARSWANDA R</option>
+<option value="28. M. ZULFAN PRATAMA">28. M. ZULFAN PRATAMA</option>
+<option value="29. NAFISATUNNIDA">29. NAFISATUNNIDA</option>
+<option value="30. NAQIYYATUNNADA">30. NAQIYYATUNNADA</option>
+<option value="31. NUR YAHYA">31. NUR YAHYA</option>
+<option value="32. ADITA ARYA SENA A">32. ADITA ARYA SENA A</option>
+<option value="33. IBNU FIKRI ARDIANSYAH">33. IBNU FIKRI ARDIANSYAH</option>
+<option value="34. INDRA SURYAWAN">34. INDRA SURYAWAN</option>
+<option value="35. AQILA MUSYARAFAH">35. AQILA MUSYARAFAH</option>
+<option value="36. ALESHA PUTERI AZZAHRA">36. ALESHA PUTERI AZZAHRA</option>
+<option value="37. FILZA KAZYUNA ADIBA">37. FILZA KAZYUNA ADIBA</option>
+<option value="38. KINARA KUMALA DEWI">38. KINARA KUMALA DEWI</option>
+<option value="39. KHEISA ANANDA SEKAR JATI">39. KHEISA ANANDA SEKAR JATI</option>
+<option value="40. NASYWA ERI LATIFAH">40. NASYWA ERI LATIFAH</option>
+<option value="41. NAJMA AQILA RAIHANA">41. NAJMA AQILA RAIHANA</option>
+<option value="42. YULI PRASETYA">42. YULI PRASETYA</option>
+<option value="43. NUR HIDAYAT">43. NUR HIDAYAT</option>
+<option value="44. TRI NUR SETIAWAN">44. TRI NUR SETIAWAN</option>
+<option value="45. FAWAZ ZAFIR AL-MIQDAD">45. FAWAZ ZAFIR AL-MIQDAD</option>
+<option value="46. HAFIZ MUHAMMAD RAFI">46. HAFIZ MUHAMMAD RAFI</option>
+<option value="47. MUHAMMAD SYAIFUDDIN">47. MUHAMMAD SYAIFUDDIN</option>
+<option value="48. GHEFIRA BUNGA AZZAHRA">48. GHEFIRA BUNGA AZZAHRA</option>
+<option value="49. MUHAMMAD HAFID ROSYID">49. MUHAMMAD HAFID ROSYID</option>
+<option value="50. SALMA MAZIDAH">50. SALMA MAZIDAH</option>
+<option value="51. TIKA PANGESTI">51. TIKA PANGESTI</option>
+<option value="52. ARIFIN KURNIA SETYATAMA">52. ARIFIN KURNIA SETYATAMA</option>
+<option value="53. AZIS MUHARROM">53. AZIS MUHARROM</option>
+<option value="54. RIZKI AHMAD TAQIYA">54. RIZKI AHMAD TAQIYA</option>
+<option value="55. MUHAMMAD SULTHAN HABIB">55. MUHAMMAD SULTHAN HABIB</option>
+<option value="56. MALIHATUZ ZAHROH">56. MALIHATUZ ZAHROH</option>
+<option value="57. EVAN RIZKI ARDANA">57. EVAN RIZKI ARDANA</option>
+<option value="58. MUHAMMAD IRSYAD RIFAI">58. MUHAMMAD IRSYAD RIFAI</option>
+<option value="59. SITI NUR'AISYAH">59. SITI NUR'AISYAH</option>
+<option value="60. DHIA NAILA AHSANI">60. DHIA NAILA AHSANI</option>
+<option value="61. FAHIRA NUR LATIFAH">61. FAHIRA NUR LATIFAH</option>
+<option value="62. MUHAMMAD DAFFA NUR FATIHAH">62. MUHAMMAD DAFFA NUR FATIHAH</option>
+<option value="63. KHAMILA SUKMANISA LATIFAH">63. KHAMILA SUKMANISA LATIFAH</option>
+<option value="64. RENDHIKA CANDRA KUSUMA">64. RENDHIKA CANDRA KUSUMA</option>
+<option value="65. KHANSA WAFIQ AISYAH">65. KHANSA WAFIQ AISYAH</option>
+<option value="66. SASMITA LARASATI">66. SASMITA LARASATI</option>
+<option value="67. SUMAR WIDAYAT">67. SUMAR WIDAYAT</option>
+<option value="68. SUSIYANI">68. SUSIYANI</option>
+<option value="69. ANDRI UTAMI">69. ANDRI UTAMI</option>
+<option value="70. ERI ISNAINI">70. ERI ISNAINI</option>
+<option value="71. CAHYANINGRUM WULAN SUCI">71. CAHYANINGRUM WULAN SUCI</option>
+<option value="72. RESTU ALMUHRIFIN">72. RESTU ALMUHRIFIN</option>
+<option value="73. RAFI ALKHAMDIKA NUGRAHA">73. RAFI ALKHAMDIKA NUGRAHA</option>
+<option value="74. AAN STYA BUDI">74. AAN STYA BUDI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dropdown Keterangan -->
+                <div>
+                    <label for="keterangan" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Kategori Kehadiran</label>
+                    <div class="relative">
+                        <select id="keterangan" name="keterangan" required 
+                            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 py-3.5 px-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-250 shadow-sm text-sm cursor-pointer outline-none">
+                            <option value="" disabled selected hidden>Pilih Kategori Kehadiran...</option>
+                            <option value="Semi Pondok">Semi Pondok</option>
+<option value="Reguler">Reguler</option>
+<option value="Ngajar Pondok">Ngajar Pondok</option>
+<option value="Jaga Pondok">Jaga Pondok</option>
+<option value="Ebta">Ebta</option>
+<option value="Pelatihan S-1">Pelatihan S-1</option>
+<option value="Lain-lain">Lain-lain</option>
+<option value="Latihan Fasi">Latihan Fasi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Time & Info Widget (Inside form for compact style) -->
+                <div class="grid grid-cols-2 gap-3 pt-2 text-center">
+                    <div class="bg-slate-100/50 dark:bg-slate-900/40 rounded-xl p-2.5 border border-slate-200/40 dark:border-slate-800/20">
+                        <span class="block text-[10px] text-slate-400 font-medium">Jam Sistem</span>
+                        <span id="systemClock" class="text-xs font-bold text-slate-700 dark:text-slate-200">--:--:--</span>
+                    </div>
+                    <div class="bg-slate-100/50 dark:bg-slate-900/40 rounded-xl p-2.5 border border-slate-200/40 dark:border-slate-800/20">
+                        <span class="block text-[10px] text-slate-400 font-medium">Total Terkirim</span>
+                        <span id="historyCount" class="text-xs font-bold text-emerald-500 dark:text-emerald-400">0 Kiriman</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" 
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-[0.98] text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all duration-150 flex items-center justify-center space-x-3 mt-2 focus:outline-none focus:ring-4 focus:ring-emerald-500/20">
+                    <span id="btnText">Kirim Presensi Sekarang</span>
+                    <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-5 flex items-center justify-center space-x-2 text-[10px] text-slate-400 dark:text-slate-500">
+                <!-- Secure Sync Icon -->
+                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Tersinkronisasi otomatis dengan Google Spreadsheet</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="w-full text-center text-[11px] text-slate-400 dark:text-slate-600 py-6 mt-4 border-t border-slate-100 dark:border-slate-900/50 z-10">
+        <div>&copy; 2026 Presensi Al Muhsin. Hak Cipta Dilindungi.</div>
+    </footer>
+
+    <!-- Animated Smooth Toasts Overlay -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 w-full max-w-sm px-4 md:px-0 pointer-events-none flex flex-col space-y-3">
+        <!-- Templates will be dynamically spawned and animated via JS -->
+    </div>
+
+    <script>
+        // System Dark/Light Mode Switcher Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        // Check local storage or system preference for theme
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        themeToggle.addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        });
+
+        // Live Clock logic
+        function updateClock() {
+            const clockEl = document.getElementById('systemClock');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            clockEl.textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Count logic from LocalStorage just to display submission status
+        let localHistory = JSON.parse(localStorage.getItem('presensi_history')) || [];
+        const historyCount = document.getElementById('historyCount');
+        
+        function updateSubmissionCount() {
+            historyCount.textContent = `${localHistory.length} Kiriman`;
+        }
+        updateSubmissionCount();
+
+        /* --- STREAMING_CHUNK:Handling form submission and showing notifications... --- */
+        const form = document.getElementById('presensiForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Spawn dynamic aesthetic toast instead of browser default alert
+        function spawnToast(type, title, message) {
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-2xl shadow-2xl flex items-start space-x-3 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-sm w-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-emerald-600', 'text-white');
+                toast.innerHTML = `
+                    <div class="bg-emerald-500 p-2 rounded-xl mt-0.5">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-extrabold text-sm">${title}</h4>
+                        <p class="text-xs text-emerald-100 mt-1">${message}</p>
+                    </div>
+                `;
+            } else {
+                toast.classList.add('bg-rose-600', 'text-white');
+                toast.innerHTML = `
+                    <div class="bg-rose-500 p-2 rounded-xl mt-0.5">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-extrabold text-sm">${title}</h4>
+                        <p class="text-xs text-rose-100 mt-1">${message}</p>
+                    </div>
+                `;
+            }
+
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 10);
+
+            // Auto dismiss toast after 4.5 seconds
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4500);
+        }
+
+        // Form submission handling
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const selectedNama = document.getElementById('nama').value;
+            const selectedKeterangan = document.getElementById('keterangan').value;
+
+            // Simple validation check
+            if (!selectedNama || !selectedKeterangan) {
+                spawnToast('error', 'Data Belum Lengkap', 'Silakan pilih Nama dan Kategori Kehadiran terlebih dahulu.');
+                return;
+            }
+
+            // Transition UI into loading state
+            submitBtn.disabled = true;
+            btnText.textContent = "Mengirimkan Data...";
+            loadingSpinner.classList.remove('hidden');
+
+            const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSfeu7lyRQxwlEmCetAwKf4nR5jWuS7omq4AvMglOim072wFcA/formResponse";
+
+            const formData = new FormData();
+            formData.append('entry.1740789150', selectedNama);
+            formData.append('entry.937883872', selectedKeterangan);
+
+            fetch(formURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
+                // Save state to increase the submission visual count
+                const timeString = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                localHistory.push({ nama: selectedNama, keterangan: selectedKeterangan, timestamp: timeString });
+                localStorage.setItem('presensi_history', JSON.stringify(localHistory));
+                updateSubmissionCount();
+
+                // Show gorgeous custom success notification
+                spawnToast('success', 'Berhasil Terkirim!', `Kehadiran untuk "${selectedNama}" berhasil tercatat ke sistem.`);
+                
+                // Reset form values cleanly
+                form.reset();
+            }).catch(() => {
+                // Show gorgeous failure notification
+                spawnToast('error', 'Koneksi Gagal', 'Gagal mengirim data. Silakan periksa jaringan internet Anda.');
+            }).finally(() => {
+                // Restore button states
+                submitBtn.disabled = false;
+                btnText.textContent = "Kirim Presensi Sekarang";
+                loadingSpinner.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

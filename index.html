@@ -1,93 +1,1233 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemeliharaan Sistem Presensi</title>
+    <title>Presensi Al Muhsin</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome CDN untuk Icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Custom Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.25);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.5);
+        }
+
+        /* Glassmorphism subtle pattern */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Modal Overlay Glass */
+        .glass-modal {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Subtle glowing background elements */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.35;
+        }
+        .dark .glow-orb {
+            opacity: 0.15;
+        }
+
+        /* Custom Select Styling */
+        select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25rem;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .dark select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between items-center p-4">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden antialiased">
 
-    <!-- Header / Logo Area -->
-    <header class="w-full max-w-lg pt-6 flex justify-center items-center">
-        <div class="flex items-center gap-2 font-bold text-slate-700 text-lg sm:text-xl">
-            <i class="fa-solid fa-clipboard-user text-blue-600"></i>
-            <span> Portal Presensi</span>
+    <!-- Glowing Background Decorative Orbs -->
+    <div class="glow-orb w-96 h-96 bg-emerald-400 -top-20 -left-20 animate-pulse" style="animation-duration: 8s;"></div>
+    <div class="glow-orb w-96 h-96 bg-teal-400 bottom-10 -right-20 animate-pulse" style="animation-duration: 12s;"></div>
+
+    <!-- Top Action Bar (Theme Toggle) -->
+    <header class="w-full max-w-4xl mx-auto px-4 pt-6 flex justify-between items-center z-10">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-emerald-500 to-teal-500 text-white p-2.5 rounded-2xl shadow-md shadow-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+              <h1 class="text-sm font-bold text-slate-800 dark:text-white -mt-1">Presensi Al Muhsin</h1>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+
+            <!-- Smooth Theme Toggle Button -->
+            <button id="themeToggle" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-400 p-2.5 rounded-xl transition-all duration-300 shadow-sm text-slate-600 dark:text-slate-300 focus:outline-none" aria-label="Toggle Theme">
+                <svg id="sunIcon" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.122-14.242l-.707-.707m12.728 12.728l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+                <svg id="moonIcon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
         </div>
     </header>
 
-    <main class="w-full max-w-md my-auto">
-        <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 text-center">
+    <!-- Main Content Grid -->
+    <main class="w-full max-w-lg mx-auto px-4 py-6 flex-1 flex flex-col justify-center z-10">
+        
+        <!-- Main Form Card -->
+        <div class="glass-card rounded-3xl shadow-2xl border border-white/60 dark:border-slate-800/60 p-6 md:p-8 transition-all duration-300 relative overflow-hidden">
             
-            <!-- Maintenance Icon -->
-            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-amber-100">
-                <i class="fa-solid fa-wrench text-2xl sm:text-3xl"></i>
-            </div>
-
-            <!-- Status Badge -->
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold mb-4">
-                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                Sistem Sedang Diperbaiki
-            </div>
-
-            <!-- Title and Description -->
-            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
-                Sedang Dalam Pemeliharaan
-            </h1>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-                Sistem presensi saat ini sedang meningkatkan performa dan perbaikan sistem. Mohon coba lagi beberapa saat lagi.
-            </p>
-
-            <!-- Info Box -->
-            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-left text-xs sm:text-sm text-slate-600 mb-6 space-y-2">
-                <div class="flex items-start gap-2.5">
-                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i>
-                    <span>Data kehadiran sebelumnya telah tersimpan dengan aman.</span>
+            <!-- Top Status Banner for Active Cycle -->
+            <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 -mx-6 -mt-6 md:-mx-8 md:-mt-8 p-3 px-6 mb-6 border-b border-emerald-500/10 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">Periode</span>
                 </div>
-                <div class="flex items-start gap-2.5">
-                    <i class="fa-regular fa-clock text-blue-500 mt-0.5"></i>
-                    <span>Estimasi selesai: <b>14 September 2026</b></span>
-                </div>
+                <span id="cyclePeriodText" class="text-[11px] font-bold text-slate-600 dark:text-slate-300">Loading...</span>
             </div>
 
-            <!-- Refresh Button -->
-            <button onclick="refreshPage()" id="reloadBtn" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
-                <span>Muat Ulang Halaman</span>
-            </button>
+            <div class="mb-6 text-center">
+                <span class="inline-block bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-3.5 py-1 rounded-full mb-3">
+                    PRESENSI AL MUHSIN
+                </span>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Kirim Kehadiran</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5">Isi kehadiran Anda dengan memilih nama dan kategori di bawah ini.</p>
+            </div>
+            
+            <form id="presensiForm" class="space-y-4">
+                
+                <!-- Dropdown Nama -->
+                <div>
+                    <label for="nama" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                    <div class="relative">
+                        <select id="nama" name="nama" required 
+                            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 py-3.5 px-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-250 shadow-sm text-sm cursor-pointer outline-none">
+                            <option value="" disabled selected hidden>Pilih Nama Anda...</option>
+                            <option value="01. MARYANTO">01. MARYANTO</option>
+                            <option value="02. ARI GUNAWAN">02. ARI GUNAWAN</option>
+                            <option value="03. AMMI MUNAWAROH">03. AMMI MUNAWAROH</option>
+                            <option value="04. MUTIA SALASATUN">04. MUTIA SALASATUN</option>
+                            <option value="05. SUMIARSIH">05. SUMIARSIH</option>
+                            <option value="06. IPUNG MUNIROH">06. IPUNG MUNIROH</option>
+                            <option value="07. FIRMAN ASHOFA">07. FIRMAN ASHOFA</option>
+                            <option value="08. IKA NAWANG SARI">08. IKA NAWANG SARI</option>
+                            <option value="09. AMINATUN">09. AMINATUN</option>
+                            <option value="10. ELVIA VALENTINA">10. ELVIA VALENTINA</option>
+                            <option value="11. ERLINA PUTRI F">11. ERLINA PUTRI F</option>
+                            <option value="12. HABIBATUL MUAZIZAH">12. HABIBATUL MUAZIZAH</option>
+                            <option value="13. TITES BANAT SARI">13. TITES BANAT SARI</option>
+                            <option value="14. LUTHFITA HAFIZHAH">14. LUTHFITA HAFIZHAH</option>
+                            <option value="15. MITA DWI LESTARI">15. MITA DWI LESTARI</option>
+                            <option value="16. NADIA VICA YUDITA">16. NADIA VICA YUDITA</option>
+                            <option value="17. VERNANDA PINGKA YUDITA">17. VERNANDA PINGKA YUDITA</option>
+                            <option value="18. SUMIARSIH 2">18. SUMIARSIH 2</option>
+                            <option value="19. TRI NUR SETIAWAN">19. TRI NUR SETIAWAN</option>
+                            <option value="20. ASIH WIDIYASTUTI">20. ASIH WIDIYASTUTI</option>
+                            <option value="21. YULIANTO">21. YULIANTO</option>
+                            <option value="22. MUSLIKHATUN">22. MUSLIKHATUN</option>
+                            <option value="23. ADWA GHAISANI ISNAWANG">23. ADWA GHAISANI ISNAWANG</option>
+                            <option value="24. BAHTIAR ADIKA PUTRA">24. BAHTIAR ADIKA PUTRA</option>
+                            <option value="25. DIMAS PRIHASMARA">25. DIMAS PRIHASMARA</option>
+                            <option value="26. FAIZATU ZAKHRA">26. FAIZATU ZAKHRA</option>
+                            <option value="27. MARSWANDA R">27. MARSWANDA R</option>
+                            <option value="28. M. ZULFAN PRATAMA">28. M. ZULFAN PRATAMA</option>
+                            <option value="29. NAFISATUNNIDA">29. NAFISATUNNIDA</option>
+                            <option value="30. NAQIYYATUNNADA">30. NAQIYYATUNNADA</option>
+                            <option value="31. NUR YAHYA">31. NUR YAHYA</option>
+                            <option value="32. ADITA ARYA SENA A">32. ADITA ARYA SENA A</option>
+                            <option value="33. IBNU FIKRI ARDIANSYAH">33. IBNU FIKRI ARDIANSYAH</option>
+                            <option value="34. INDRA SURYAWAN">34. INDRA SURYAWAN</option>
+                            <option value="35. AQILA MUSYARAFAH">35. AQILA MUSYARAFAH</option>
+                            <option value="36. ALESHA PUTERI AZZAHRA">36. ALESHA PUTERI AZZAHRA</option>
+                            <option value="37. FILZA KAZYUNA ADIBA">37. FILZA KAZYUNA ADIBA</option>
+                            <option value="38. KINARA KUMALA DEWI">38. KINARA KUMALA DEWI</option>
+                            <option value="39. KHEISA ANANDA SEKAR JATI">39. KHEISA ANANDA SEKAR JATI</option>
+                            <option value="40. NASYWA ERI LATIFAH">40. NASYWA ERI LATIFAH</option>
+                            <option value="41. NAJMA AQILA RAIHANA">41. NAJMA AQILA RAIHANA</option>
+                            <option value="42. YULI PRASETYA">42. YULI PRASETYA</option>
+                            <option value="43. NUR HIDAYAT">43. NUR HIDAYAT</option>
+                            <option value="44. TRI NUR SETIAWAN">44. TRI NUR SETIAWAN</option>
+                            <option value="45. FAWAZ ZAFIR AL-MIQDAD">45. FAWAZ ZAFIR AL-MIQDAD</option>
+                            <option value="46. HAFIZ MUHAMMAD RAFI">46. HAFIZ MUHAMMAD RAFI</option>
+                            <option value="47. MUHAMMAD SYAIFUDDIN">47. MUHAMMAD SYAIFUDDIN</option>
+                            <option value="48. GHEFIRA BUNGA AZZAHRA">48. GHEFIRA BUNGA AZZAHRA</option>
+                            <option value="49. MUHAMMAD HAFID ROSYID">49. MUHAMMAD HAFID ROSYID</option>
+                            <option value="50. SALMA MAZIDAH">50. SALMA MAZIDAH</option>
+                            <option value="51. TIKA PANGESTI">51. TIKA PANGESTI</option>
+                            <option value="52. ARIFIN KURNIA SETYATAMA">52. ARIFIN KURNIA SETYATAMA</option>
+                            <option value="53. AZIS MUHARROM">53. AZIS MUHARROM</option>
+                            <option value="54. RIZKI AHMAD TAQIYA">54. RIZKI AHMAD TAQIYA</option>
+                            <option value="55. MUHAMMAD SULTHAN HABIB">55. MUHAMMAD SULTHAN HABIB</option>
+                            <option value="56. MALIHATUZ ZAHROH">56. MALIHATUZ ZAHROH</option>
+                            <option value="57. EVAN RIZKI ARDANA">57. EVAN RIZKI ARDANA</option>
+                            <option value="59. SITI NUR'AISYAH">59. SITI NUR'AISYAH</option>
+                            <option value="60. DHIA NAILA AHSANI">60. DHIA NAILA AHSANI</option>
+                            <option value="61. FAHIRA NUR LATIFAH">61. FAHIRA NUR LATIFAH</option>
+                            <option value="62. MUHAMMAD DAFFA NUR FATIHAH">62. MUHAMMAD DAFFA NUR FATIHAH</option>
+                            <option value="64. RENDHIKA CANDRA KUSUMA">64. RENDHIKA CANDRA KUSUMA</option>
+                            <option value="65. KHANSA WAFIQ AISYAH">65. KHANSA WAFIQ AISYAH</option>
+                            <option value="67. SUMAR WIDAYAT">67. SUMAR WIDAYAT</option>
+                            <option value="68. SUSIYANI">68. SUSIYANI</option>
+                            <option value="69. ANDRI UTAMI">69. ANDRI UTAMI</option>
+                            <option value="70. ERI ISNAINI">70. ERI ISNAINI</option>
+                            <option value="71. CAHYANINGRUM WULAN SUCI">71. CAHYANINGRUM WULAN SUCI</option>
+                            <option value="72. RESTU ALMUHRIFIN">72. RESTU ALMUHRIFIN</option>
+                            <option value="73. RAFI ALKHAMDIKA NUGRAHA">73. RAFI ALKHAMDIKA NUGRAHA</option>
+                            <option value="74. AAN STYA BUDI">74. AAN STYA BUDI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dropdown Keterangan -->
+                <div>
+                    <label for="keterangan" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">Kategori Kehadiran</label>
+                    <div class="relative">
+                        <select id="keterangan" name="keterangan" required 
+                            class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 py-3.5 px-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-250 shadow-sm text-sm cursor-pointer outline-none">
+                            <option value="" disabled selected hidden>Pilih Kategori Kehadiran...</option>
+                            <option value="Semi Pondok">Semi Pondok</option>
+                            <option value="Reguler">Reguler</option>
+                            <option value="Ngajar Pondok">Ngajar Pondok</option>
+                            <option value="Jaga Pondok">Jaga Pondok</option>
+                            <option value="Ebta">Ebta</option>
+                            <option value="Pelatihan S-1">Pelatihan S-1</option>
+                            <option value="Lain-lain">Lain-lain</option>
+                            <option value="Latihan Fasi">Latihan Fasi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Time, Count & Monthly Reset Widget -->
+                <div class="grid grid-cols-2 gap-3 pt-1 text-center">
+                    <div class="bg-slate-100/60 dark:bg-slate-900/50 rounded-2xl p-3 border border-slate-200/50 dark:border-slate-800/40">
+                        <span class="block text-[10px] text-slate-400 font-medium">Jam</span>
+                        <span id="systemClock" class="text-xs font-bold text-slate-700 dark:text-slate-200">--:--:--</span>
+                    </div>
+                    <div class="bg-slate-100/60 dark:bg-slate-900/50 rounded-2xl p-3 border border-slate-200/50 dark:border-slate-800/40 relative">
+                        <span class="block text-[10px] text-slate-400 font-medium"> Terkirim Dalam Periode Ini </span>
+                        <span id="historyCount" class="text-xs font-bold text-emerald-600 dark:text-emerald-400">0 Kiriman</span>
+                    </div>
+                </div>
+
+                <!-- Countdown Timer to Reset (Tanggal 25 jam 23.59) -->
+                <div class="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-2.5 px-3.5 flex items-center justify-between text-[11px] border border-emerald-200/50 dark:border-emerald-800/30">
+                    <span class="text-slate-600 dark:text-slate-400 font-medium flex items-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Reset Periode Dalam:</span>
+                    </span>
+                    <span id="resetCountdown" class="font-bold font-mono text-emerald-700 dark:text-emerald-300">--d --h --m --s</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" 
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-[0.98] text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-150 flex items-center justify-center space-x-3 mt-2 focus:outline-none focus:ring-4 focus:ring-emerald-500/20">
+                    <span id="btnText">Kirim Presensi Sekarang</span>
+                    <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <!-- FEATURE 1: View Presensi Button (Below Submit) -->
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                <button id="openRekapBtn" type="button" class="w-full bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 font-semibold py-3 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center space-x-2 text-xs">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Lihat Riwayat Presensi</span>
+                </button>
+            </div>
+
+            <div class="mt-4 flex items-center justify-center space-x-2 text-[10px] text-slate-400 dark:text-slate-500">
+                <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Tersimpan Otomatis Pada Google Spreadsheet</span>
+            </div>
         </div>
     </main>
 
-    <!-- Simple Footer -->
-    <footer class="w-full text-center py-4 text-xs text-slate-400">
-        &copy; <span id="year"></span> Tim Administrator Sistem Presensi
+    <!-- Footer Section -->
+    <footer class="w-full text-center text-[11px] text-slate-400 dark:text-slate-600 py-6 mt-2 border-t border-slate-100 dark:border-slate-900/50 z-10">
+        <div>&copy; 2026 Presensi Al Muhsin. Hak Cipta Dilindungi.</div>
     </footer>
 
-    <script>
-        // Set dynamic current year
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Refresh action
-        function refreshPage() {
-            const icon = document.getElementById('refreshIcon');
-            icon.classList.add('animate-spin');
+    <!-- MODAL: Rekap Presensi & Database Viewer -->
+    <div id="rekapModal" class="fixed inset-0 z-50 glass-modal flex items-center justify-center p-3 md:p-6 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transform scale-95 transition-all duration-300" id="rekapModalContent">
             
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            <!-- Modal Header -->
+            <div class="p-4 md:p-6 border-b border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-500/10 text-emerald-500 p-2.5 rounded-2xl">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base md:text-lg font-bold text-slate-900 dark:text-white">Riwayat Presensi Al Muhsin</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Data rekapitulasi kehadiran real-time dari Google Spreadsheet</p>
+                    </div>
+                </div>
+                <button id="closeRekapBtn" type="button" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-4 md:p-6 overflow-y-auto flex-1 space-y-4">
+                <!-- TAB 2: Local Device History -->
+                <div id="tabLocalContent" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs text-slate-500">Daftar presensi yang dikirim dari browser ini pada periode aktif saat ini:</p>
+                        <button id="clearLocalHistoryBtn" type="button" class="text-rose-500 hover:text-rose-600 text-[11px] font-semibold flex items-center space-x-1">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            <span>Bersihkan Riwayat</span>
+                        </button>
+                    </div>
+
+                    <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-100 dark:bg-slate-800/70 text-slate-600 dark:text-slate-300 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
+                                    <tr>
+                                        <th class="p-3 px-4">Waktu Kirim</th>
+                                        <th class="p-3 px-4">Nama Lengkap</th>
+                                        <th class="p-3 px-4">Kategori</th>
+                                        <th class="p-3 px-4 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="localTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-200">
+                                    <!-- Dynamic Local History Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 flex justify-end">
+                <button id="closeRekapFooterBtn" type="button" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold text-xs py-2 px-5 rounded-xl transition">
+                    Tutup Riwayat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animated Toasts Overlay -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 w-full max-w-sm px-4 md:px-0 pointer-events-none flex flex-col space-y-3"></div>
+
+    <script>
+    // ==========================================
+    // DARK / LIGHT MODE
+    // ==========================================
+
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    if (
+        localStorage.getItem('color-theme') === 'dark' ||
+        (
+            !('color-theme' in localStorage) &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches
+        )
+    ) {
+        document.documentElement.classList.add('dark');
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+    } else {
+        document.documentElement.classList.remove('dark');
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+    }
+
+    themeToggle.addEventListener('click', function () {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
         }
-    </script>
+    });
+
+
+    // ==========================================
+    // PERIODE PRESENSI
+    // Siklus: tanggal 26 sampai tanggal 25
+    // ==========================================
+
+    function getCurrentCycleRange(refDate = new Date()) {
+        const date = new Date(refDate);
+
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        let startDate;
+        let endDate;
+
+        if (day > 25) {
+            // 26 bulan ini -> 25 bulan depan
+            startDate = new Date(
+                year,
+                month,
+                26,
+                0,
+                0,
+                0
+            );
+
+            endDate = new Date(
+                year,
+                month + 1,
+                25,
+                23,
+                59,
+                59
+            );
+        } else {
+            // 26 bulan sebelumnya -> 25 bulan ini
+            startDate = new Date(
+                year,
+                month - 1,
+                26,
+                0,
+                0,
+                0
+            );
+
+            endDate = new Date(
+                year,
+                month,
+                25,
+                23,
+                59,
+                59
+            );
+        }
+
+        return {
+            startDate,
+            endDate
+        };
+    }
+
+
+    // ==========================================
+    // FORMAT PERIODE
+    // ==========================================
+
+    function formatCycleString(startDate, endDate) {
+        const monthNames = [
+            "Januari", "Febuari", "Maret", "April",
+            "Mei", "Juni", "Juli", "Agustus",
+            "September", "Okttober", "November", "Desember"
+        ];
+
+        const startStr =
+            `${startDate.getDate()} ${monthNames[startDate.getMonth()]}`;
+
+        const endStr =
+            `${endDate.getDate()} ${monthNames[endDate.getMonth()]}`;
+
+        return `${startStr} - ${endStr}`;
+    }
+
+
+    // ==========================================
+    // CLOCK + COUNTDOWN
+    // ==========================================
+
+    function updateClockAndCountdown() {
+
+        const clockEl =
+            document.getElementById('systemClock');
+
+        const countdownEl =
+            document.getElementById('resetCountdown');
+
+        const cycleTextEl =
+            document.getElementById('cyclePeriodText');
+
+        const now = new Date();
+
+        // Jam sistem
+        clockEl.textContent =
+            now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+        // Periode aktif
+        const {
+            startDate,
+            endDate
+        } = getCurrentCycleRange(now);
+
+        cycleTextEl.textContent =
+            formatCycleString(startDate, endDate);
+
+        // Countdown
+        const diffMs =
+            endDate.getTime() - now.getTime();
+
+        if (diffMs <= 0) {
+
+            countdownEl.textContent =
+                "Sedang Mereset...";
+
+            handleMonthlyReset();
+
+        } else {
+
+            const totalSec =
+                Math.floor(diffMs / 1000);
+
+            const days =
+                Math.floor(totalSec / (3600 * 24));
+
+            const hours =
+                Math.floor(
+                    (totalSec % (3600 * 24)) / 3600
+                );
+
+            const mins =
+                Math.floor(
+                    (totalSec % 3600) / 60
+                );
+
+            const secs =
+                totalSec % 60;
+
+            countdownEl.textContent =
+                `${days}d ${hours}h ${mins}m ${secs}s`;
+        }
+    }
+
+    setInterval(
+        updateClockAndCountdown,
+        1000
+    );
+
+    updateClockAndCountdown();
+
+
+    // ==========================================
+    // RIWAYAT LOCAL STORAGE
+    // ==========================================
+
+    let localHistory =
+        JSON.parse(
+            localStorage.getItem(
+                'presensi_history_v2'
+            )
+        ) || [];
+
+
+    // ==========================================
+    // FILTER RIWAYAT BERDASARKAN PERIODE
+    // ==========================================
+
+    function filterHistoryForCurrentCycle() {
+
+        const {
+            startDate,
+            endDate
+        } = getCurrentCycleRange(new Date());
+
+        return localHistory.filter(item => {
+
+            if (!item.isoTime) {
+                return true;
+            }
+
+            const itemDate =
+                new Date(item.isoTime);
+
+            return (
+                itemDate >= startDate &&
+                itemDate <= endDate
+            );
+        });
+    }
+
+
+    // ==========================================
+    // UPDATE JUMLAH KIRIMAN
+    // ==========================================
+
+    function updateSubmissionCount() {
+
+        const currentCycleSubmissions =
+            filterHistoryForCurrentCycle();
+
+        const historyCount =
+            document.getElementById(
+                'historyCount'
+            );
+
+        historyCount.textContent =
+            `${currentCycleSubmissions.length} Kiriman`;
+    }
+
+
+    // ==========================================
+    // RESET PERIODE
+    // ==========================================
+
+    function handleMonthlyReset() {
+
+        updateSubmissionCount();
+
+        renderLocalTable();
+    }
+
+    updateSubmissionCount();
+
+
+    // ==========================================
+    // ELEMENT FORM
+    // ==========================================
+
+    const form =
+        document.getElementById(
+            'presensiForm'
+        );
+
+    const submitBtn =
+        document.getElementById(
+            'submitBtn'
+        );
+
+    const btnText =
+        document.getElementById(
+            'btnText'
+        );
+
+    const loadingSpinner =
+        document.getElementById(
+            'loadingSpinner'
+        );
+
+    const toastContainer =
+        document.getElementById(
+            'toastContainer'
+        );
+
+
+    // ==========================================
+    // TOAST NOTIFICATION
+    // ==========================================
+
+    function spawnToast(
+        type,
+        title,
+        message
+    ) {
+
+        const toast =
+            document.createElement('div');
+
+        toast.className =
+            `p-4 rounded-2xl shadow-2xl
+             flex items-start space-x-3
+             transition-all duration-300
+             transform translate-y-2 opacity-0
+             pointer-events-auto max-w-sm w-full`;
+
+        if (type === 'success') {
+
+            toast.classList.add(
+                'bg-emerald-600',
+                'text-white'
+            );
+
+            toast.innerHTML = `
+                <div class="bg-emerald-500 p-2 rounded-xl mt-0.5">
+                    <svg class="h-5 w-5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="3">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+
+                <div class="flex-1">
+                    <h4 class="font-extrabold text-sm">
+                        ${title}
+                    </h4>
+
+                    <p class="text-xs text-emerald-100 mt-1">
+                        ${message}
+                    </p>
+                </div>
+            `;
+
+        } else {
+
+            toast.classList.add(
+                'bg-rose-600',
+                'text-white'
+            );
+
+            toast.innerHTML = `
+                <div class="bg-rose-500 p-2 rounded-xl mt-0.5">
+                    <svg class="h-5 w-5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="3">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+
+                <div class="flex-1">
+                    <h4 class="font-extrabold text-sm">
+                        ${title}
+                    </h4>
+
+                    <p class="text-xs text-rose-100 mt-1">
+                        ${message}
+                    </p>
+                </div>
+            `;
+        }
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+
+            toast.classList.remove(
+                'translate-y-2',
+                'opacity-0'
+            );
+
+            toast.classList.add(
+                'translate-y-0',
+                'opacity-100'
+            );
+
+        }, 10);
+
+        setTimeout(() => {
+
+            toast.classList.add(
+                'opacity-0',
+                'scale-95'
+            );
+
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+
+        }, 4500);
+    }
+
+
+    // ==========================================
+    // SUBMIT PRESENSI
+    // ==========================================
+
+    form.addEventListener(
+        'submit',
+        function (e) {
+
+            e.preventDefault();
+
+            const selectedNama =
+                document.getElementById(
+                    'nama'
+                ).value;
+
+            const selectedKeterangan =
+                document.getElementById(
+                    'keterangan'
+                ).value;
+
+
+            if (
+                !selectedNama ||
+                !selectedKeterangan
+            ) {
+
+                spawnToast(
+                    'error',
+                    'Data Belum Lengkap',
+                    'Silakan pilih Nama dan Kategori Kehadiran terlebih dahulu.'
+                );
+
+                return;
+            }
+
+
+            submitBtn.disabled = true;
+
+            btnText.textContent =
+                "Mengirimkan Data...";
+
+            loadingSpinner.classList.remove(
+                'hidden'
+            );
+
+
+            // Google Form
+            const formURL =
+                "https://docs.google.com/forms/d/e/1FAIpQLSfeu7lyRQxwlEmCetAwKf4nR5jWuS7omq4AvMglOim072wFcA/formResponse";
+
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                'entry.1740789150',
+                selectedNama
+            );
+
+            formData.append(
+                'entry.937883872',
+                selectedKeterangan
+            );
+
+
+            fetch(
+                formURL,
+                {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                }
+            )
+            .then(() => {
+
+                const now =
+                    new Date();
+
+                const timeString =
+                    now.toLocaleTimeString(
+                        'id-ID',
+                        {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }
+                    );
+
+                const dateString =
+                    now.toLocaleDateString(
+                        'id-ID',
+                        {
+                            day: '2-digit',
+                            month: 'short'
+                        }
+                    );
+
+
+                // Simpan riwayat
+                localHistory.unshift({
+
+                    nama:
+                        selectedNama,
+
+                    keterangan:
+                        selectedKeterangan,
+
+                    timeDisplay:
+                        `${dateString}, ${timeString}`,
+
+                    isoTime:
+                        now.toISOString()
+
+                });
+
+
+                localStorage.setItem(
+                    'presensi_history_v2',
+                    JSON.stringify(
+                        localHistory
+                    )
+                );
+
+
+                updateSubmissionCount();
+
+                renderLocalTable();
+
+
+                spawnToast(
+                    'success',
+                    'Berhasil Terkirim!',
+                    `Kehadiran untuk "${selectedNama}" berhasil tercatat.`
+                );
+
+
+                form.reset();
+
+            })
+            .catch(() => {
+
+                spawnToast(
+                    'error',
+                    'Koneksi Gagal',
+                    'Gagal mengirim data. Silakan periksa jaringan internet Anda.'
+                );
+
+            })
+            .finally(() => {
+
+                submitBtn.disabled =
+                    false;
+
+                btnText.textContent =
+                    "Kirim Presensi Sekarang";
+
+                loadingSpinner.classList.add(
+                    'hidden'
+                );
+            });
+        }
+    );
+
+
+    // ==========================================
+    // MODAL RIWAYAT
+    // ==========================================
+
+    const rekapModal =
+        document.getElementById(
+            'rekapModal'
+        );
+
+    const rekapModalContent =
+        document.getElementById(
+            'rekapModalContent'
+        );
+
+    const openRekapBtn =
+        document.getElementById(
+            'openRekapBtn'
+        );
+
+    const closeRekapBtn =
+        document.getElementById(
+            'closeRekapBtn'
+        );
+
+    const closeRekapFooterBtn =
+        document.getElementById(
+            'closeRekapFooterBtn'
+        );
+
+
+    // Buka modal
+    function openModal() {
+
+        rekapModal.classList.remove(
+            'opacity-0',
+            'pointer-events-none'
+        );
+
+        rekapModalContent.classList.remove(
+            'scale-95'
+        );
+
+        rekapModalContent.classList.add(
+            'scale-100'
+        );
+
+        renderLocalTable();
+    }
+
+
+    // Tutup modal
+    function closeModal() {
+
+        rekapModal.classList.add(
+            'opacity-0',
+            'pointer-events-none'
+        );
+
+        rekapModalContent.classList.remove(
+            'scale-100'
+        );
+
+        rekapModalContent.classList.add(
+            'scale-95'
+        );
+    }
+
+
+    openRekapBtn.addEventListener(
+        'click',
+        openModal
+    );
+
+    closeRekapBtn.addEventListener(
+        'click',
+        closeModal
+    );
+
+    closeRekapFooterBtn.addEventListener(
+        'click',
+        closeModal
+    );
+
+
+    // ==========================================
+    // TUTUP MODAL KLIK AREA LUAR
+    // ==========================================
+
+    rekapModal.addEventListener(
+        'click',
+        function (e) {
+
+            if (
+                e.target === rekapModal
+            ) {
+                closeModal();
+            }
+        }
+    );
+
+
+    // ==========================================
+    // RIWAYAT PRESENSI
+    // ==========================================
+
+    function renderLocalTable() {
+
+        const localTableBody =
+            document.getElementById(
+                'localTableBody'
+            );
+
+        const cycleSubmissions =
+            filterHistoryForCurrentCycle();
+
+
+        if (
+            cycleSubmissions.length === 0
+        ) {
+
+            localTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4"
+                        class="p-6 text-center text-slate-400">
+                        Belum ada riwayat kiriman
+                        untuk siklus periode ini.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        localTableBody.innerHTML =
+            cycleSubmissions
+                .map(item => `
+
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+
+                    <td class="p-3 px-4 font-mono text-[11px] text-slate-500">
+                        ${item.timeDisplay || 'Baru Saja'}
+                    </td>
+
+                    <td class="p-3 px-4 font-semibold text-slate-800 dark:text-slate-100">
+                        ${item.nama}
+                    </td>
+
+                    <td class="p-3 px-4">
+
+                        <span class="inline-block bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] px-2.5 py-0.5 rounded-md font-semibold">
+
+                            ${item.keterangan}
+
+                        </span>
+
+                    </td>
+
+                    <td class="p-3 px-4 text-right">
+
+                        <span class="inline-flex items-center text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+
+                            <svg class="w-3 h-3 mr-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="3"
+                                    d="M5 13l4 4L19 7"/>
+
+                            </svg>
+
+                            Terkirim
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            `)
+            .join('');
+    }
+
+
+    // ==========================================
+    // BERSIHKAN RIWAYAT
+    // ==========================================
+
+    document
+        .getElementById(
+            'clearLocalHistoryBtn'
+        )
+        .addEventListener(
+            'click',
+            () => {
+
+                if (
+                    localHistory.length === 0
+                ) {
+
+                    spawnToast(
+                        'error',
+                        'Riwayat Kosong',
+                        'Tidak ada riwayat yang perlu dibersihkan.'
+                    );
+
+                    return;
+                }
+
+
+                const confirmed =
+                    confirm(
+                        'Apakah Anda yakin ingin menghapus seluruh riwayat pada perangkat ini?'
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                localHistory = [];
+
+                localStorage.removeItem(
+                    'presensi_history_v2'
+                );
+
+
+                updateSubmissionCount();
+
+                renderLocalTable();
+
+
+                spawnToast(
+                    'success',
+                    'Riwayat Dibersihkan',
+                    'Riwayat presensi pada perangkat ini telah dihapus.'
+                );
+            }
+        );
+
+
+    // ==========================================
+    // ESCAPE UNTUK MENUTUP MODAL
+    // ==========================================
+
+    document.addEventListener(
+        'keydown',
+        function (e) {
+
+            if (
+                e.key === 'Escape'
+            ) {
+
+                closeModal();
+
+            }
+        }
+    );
+
+</script>
 </body>
 </html>
